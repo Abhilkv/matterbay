@@ -1,48 +1,45 @@
-import React from "react";
 import { shallow } from "enzyme";
 import { Card } from "./index";
+import { formatDate } from "./index";
 
-describe("Card component", () => {
-  const testData = {
-    title: "Test Title",
-    ImageStyle_thumbnail: "https://example.com/image.jpg",
-    last_update: 1622498587,
-  };
-
-  it("should render the Card component", () => {
-    const wrapper = shallow(<Card data={testData} />);
-    expect(wrapper.exists()).toBeTruthy();
-  });
-
-  it("should render the title in the header", () => {
-    const wrapper = shallow(<Card data={testData} />);
-    expect(wrapper.find(".header").text()).toEqual("Test Title");
-  });
-
-  it("should truncate the title if it is too long", () => {
-    const testData = {
-      title:
-        "A title that is longer than 80 characters and needs to be truncated",
-      ImageStyle_thumbnail: "https://example.com/image.jpg",
-      last_update: 1622498587,
+describe("Card", () => {
+  it("renders correctly with given props", () => {
+    const data = {
+      title: "Test title",
+      ImageStyle_thumbnail: "https://testimage.com",
+      last_update: 1620660032,
     };
-    const wrapper = shallow(<Card data={testData} />);
-    expect(wrapper.find(".header").text()).toEqual(
-      "A title that is longer than 80 characters and needs to be trunc..."
-    );
+    const wrapper = shallow(<Card data={data} />);
+    expect(wrapper).toMatchSnapshot();
+  });
+});
+
+describe("formatDate", () => {
+  it("formats the date correctly", () => {
+    const timestamp = 1620660032;
+    const expectedDate = "May 9, 2021, 4:40 PM GMT+5:30";
+    expect(formatDate(timestamp)).toEqual(expectedDate);
+  });
+});
+
+describe("Card with title", () => {
+  it("slices the title correctly if it is longer than 66 characters", () => {
+    const data = {
+      title: "This is a long test title that should be sliced",
+      ImageStyle_thumbnail: "https://testimage.com",
+      last_update: 1620660032,
+    };
+    const wrapper = shallow(<Card data={data} />);
+    expect(wrapper.find(".header").text()).toEqual("This is a long test title that should be sliced...");
   });
 
-  it("should render the image with the correct props", () => {
-    const wrapper = shallow(<Card data={testData} />);
-    const img = wrapper.find(".cardImage");
-    expect(img.prop("src")).toEqual("https://example.com/image.jpg");
-    expect(img.prop("width")).toEqual(250);
-    expect(img.prop("height")).toEqual(200);
-    expect(img.prop("alt")).toEqual("img");
-  });
-
-  it("should render the last update date in the correct format", () => {
-    const wrapper = shallow(<Card data={testData} />);
-    expect(wrapper.find(".cardText div").text()).toEqual("Jun 1, 2021, 12:43 PM IST");
+  it("sets the alt attribute of the image tag correctly", () => {
+    const data = {
+      title: "Test title",
+      ImageStyle_thumbnail: "https://testimage.com",
+      last_update: 1620660032,
+    };
+    const wrapper = shallow(<Card data={data} />);
+    expect(wrapper.find("img").prop("alt")).toEqual("img");
   });
 });

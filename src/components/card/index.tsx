@@ -3,7 +3,7 @@ import styles from "./index.module.scss";
 
 type CardProps = Record<string, any>;
 
-function formatDate(timestamp: number): string {
+export const  formatDate = (timestamp: number): string => {
     const date = new Date(timestamp * 1000);
     const formattedDate = new Intl.DateTimeFormat("en-US", {
       month: "short",

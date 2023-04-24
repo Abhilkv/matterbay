@@ -75,6 +75,7 @@
     "@storybook/preset-scss": "^1.0.3",
     "@storybook/react": "^6.2.9",
     "@types/react-redux": "^7.1.16",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.8.0",
     "babel-loader": "^8.1.0",
     "concurrently": "^8.0.1",
     "nock": "^13.0.11",

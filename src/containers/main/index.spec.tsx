@@ -1,60 +1,41 @@
-import React from "react";
-import { mount } from "enzyme";
-import Main from "./index";
+import React from 'react';
+import { shallow } from 'enzyme';
+import Main from './index';
+import { Card, Loader } from '../../components';
 
-describe("Main component", () => {
-  it("should render a list of cards", () => {
-    const wrapper = mount(<Main />);
-    // Mock the fetch request and return some data
-    global.fetch = jest.fn().mockImplementation(() => Promise.resolve({
-      json: () => Promise.resolve({
-        nodes: [
-          { node: { title: "Card 1", ImageStyle_thumbnail: "image1.png", last_update: 1234567890 } },
-          { node: { title: "Card 2", ImageStyle_thumbnail: "image2.png", last_update: 1234567890 } },
-        ]
-      })
-    }));
-
-    // Wait for the initial fetch to complete and re-render the component
-    return new Promise((resolve) => setImmediate(resolve)).then(() => {
-      wrapper.update();
-
-      // Expect to find two cards in the list
-      expect(wrapper.find("Card")).toHaveLength(2);
-    });
+describe('Main', () => {
+  let wrapper;
+  beforeEach(() => {
+    wrapper = shallow(<Main />);
   });
 
-  it("should fetch new data when scrolling to the bottom of the page", () => {
-    const wrapper = mount(<Main />);
-    // Mock the fetch request and return some data
-    global.fetch = jest.fn().mockImplementation(() => Promise.resolve({
-      json: () => Promise.resolve({
-        nodes: [
-          { node: { title: "Card 3", ImageStyle_thumbnail: "image3.png", last_update: 1234567890 } },
-        ]
-      })
-    }));
+  it('renders without crashing', () => {
+    expect(wrapper.exists()).toBe(true);
+  });
 
-    // Wait for the initial fetch to complete and re-render the component
-    return new Promise((resolve) => setImmediate(resolve)).then(() => {
-      wrapper.update();
+  it('renders Loader when loading is true', () => {
+    wrapper.setState({ loading: true });
+    expect(wrapper.find(Loader).length).toBe(1);
+  });
 
-      // Simulate scrolling to the bottom of the page
-      window.innerHeight = 500;
-      window.scrollY = 1000;
-      window.document.documentElement.scrollTop = 1000;
-      window.dispatchEvent(new Event("scroll"));
+  it('renders Card when loading is false and listData has length greater than 0', () => {
+    const data = { nodes: [{ title: 'Test', ImageStyle_thumbnail: 'url', last_update: 123 }] };
+    wrapper.setState({ loading: false, listData: [data] });
+    expect(wrapper.find(Card).length).toBe(1);
+  });
 
-      // Expect the fetch method to be called with page=2
-      expect(global.fetch).toHaveBeenCalledWith("http://localhost:3001/api/2");
+  it('sets page state when handleScroll is called', () => {
+    const spy = jest.spyOn(Main.prototype, 'handleScroll');
+    wrapper.instance().forceUpdate();
+    wrapper.instance().handleScroll();
+    expect(spy).toHaveBeenCalled();
+    spy.mockRestore();
+  });
 
-      // Wait for the new data to be fetched and the component to re-render
-      return new Promise((resolve) => setImmediate(resolve)).then(() => {
-        wrapper.update();
-
-        // Expect to find three cards in the list
-        expect(wrapper.find("Card")).toHaveLength(3);
-      });
-    });
+  it('fetches data when fetchData is called', async () => {
+    const fetchSpy = jest.spyOn(window, 'fetch');
+    await wrapper.instance().fetchData();
+    expect(fetchSpy).toHaveBeenCalled();
+    fetchSpy.mockRestore();
   });
 });

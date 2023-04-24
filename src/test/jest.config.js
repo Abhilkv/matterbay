@@ -6,6 +6,7 @@ const paths = compilerOptions.paths ? compilerOptions.paths : {};
 module.exports = {
     rootDir: "../",
     setupFilesAfterEnv: ["<rootDir>/test/jest.setup.ts"],
+    setupFilesAfterEnv: ['./jest.setup.js'],
     testPathIgnorePatterns: [
         "<rootDir>/.next/",
         "<rootDir>/node_modules/",
