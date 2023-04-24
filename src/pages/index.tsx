@@ -1,6 +1,7 @@
 import React from "react";
 
-import { Header, Main, Cards, Footer } from "components/scss";
+import { Header, Footer } from "components";
+import Main from '../containers/main'
 
 const Home: React.FC = () => {
     return (
@@ -8,12 +9,11 @@ const Home: React.FC = () => {
             style={{
                 display: "flex",
                 flexDirection: "column",
-                minHeight: "100vh",
+                maxHeight: "100vh",
             }}
         >
             <Header />
             <Main />
-            <Cards />
             <Footer />
         </div>
     );
