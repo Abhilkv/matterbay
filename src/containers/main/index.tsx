@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useMachine } from '@xstate/react';
 import styles from "./index.module.scss";
-
 import { Card, Loader } from '../../components';
 
 const Main: React.FC = () => {
