@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./index.module.scss";
 
 import { Card, Loader } from '../../components';
 
 const Main: React.FC = () => {
   const [page, setPage] = useState(1);
-  const [listData, setListData] = useState([]);
+  const [listData, setListData] = useState<Record<string, any>[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -14,12 +14,12 @@ const Main: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    fetchData();
+    fetchData(page);
   }, [page]);
 
-  const fetchData = () => {
+  const fetchData = (pageNumber: number) => {
     setLoading(true);
-    fetch(`http://localhost:3001/api/${page}`)
+    fetch(`https://englishapi.pinkvilla.com/app-api/v1/photo-gallery-feed-page/page/${pageNumber}`)
       .then((response) => response.json())
       .then((data) => {
         setListData((prev) =>( [...prev, ...(data.nodes)]));
@@ -43,10 +43,9 @@ const Main: React.FC = () => {
 
   return (
   <div className={styles.main}>
-    {loading ? (
-    <Loader />
-    ) : (
-      (listData?.length > 0) && listData?.map((cardItem) => (
+    {loading && (<Loader />)}
+    {(
+       (listData?.length > 0) && listData?.map((cardItem) => (
         <Card data={cardItem.node} />
       )) 
     )}

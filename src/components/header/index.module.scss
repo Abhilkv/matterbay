@@ -1,10 +1,16 @@
 .header {
     background-color: #20232a;
     text-align: center;
+    width: 100%;
+    z-index: 30;
+    position: fixed;
+    padding: 15px 0px;
 
     .title {
         color: #FFFFFF;
         font-size: 48px;
+        font-weight: bold;
+        margin: 20px;
     }
 }
 
